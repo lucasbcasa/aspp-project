@@ -24,5 +24,20 @@ c. GPU acceleration:
 
 ## Completion list:
 
+- [ ] Documented the code:
+    - [x] bands.py
+    - [ ] constants.py
+    - [ ] eigenvalueDerivatives.py
+    - [ ] graphics.py
+    - [ ] hamiltonians.py
+    - [ ] junctions.py
+    - [ ] multiterminal.py
+    - [ ] nanowires.py
+    - [ ] sharpness.py
+    - [ ] solvers.py
+    - [ ] supercurrent.py
+    - [ ] temperature.py
+    - [ ] utilities.py
+    - [ ] wavefunctions.py
+- [ ] MPI:
 - [x] Transform code into a package by creating __init__.py file with necessary imports and my custom reload function
-- [ ]
