@@ -3,7 +3,7 @@ Project for the ASPP course
 
 ## Note
 
-During this past week I was able to implement several parts of my plan, but there is much of what I had originally planned left to be done. Since this code is part of my reasearch I will slowly implement the remaining ideas, related to the techniques I learned in this course.
+During this past week I was able to implement several parts of my original plan for this project, but there is much of what I had originally planned left to be done. Since this code is part of my reasearch I will slowly implement the remaining ideas, related to the techniques I learned in this course.
 
 ## Plan
 
