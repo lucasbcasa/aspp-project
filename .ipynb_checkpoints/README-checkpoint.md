@@ -37,8 +37,10 @@ c. GPU acceleration:
     - [ ] sharpness.py
     - [ ] solvers.py
     - [ ] supercurrent.py
-    - [ ] temperature.py
+    - [x] temperature.py
     - [ ] utilities.py
     - [ ] wavefunctions.py
 - [ ] MPI:
+    - [ ] Create MPI_solver.py
+    - [ ] ?
 - [x] Transform code into a package by creating __init__.py file with necessary imports and my custom reload function
