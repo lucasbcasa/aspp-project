@@ -1,6 +1,10 @@
 # aspp-project 2022 - Lucas Baldo 
 Project for the ASPP course
 
+## Note
+
+During this past week I was able to implement several parts of my plan, but there is much of what I had originally planned left to be done. Since this code is part of my reasearch I will slowly implement the remaining ideas, related to the techniques I learned in this course.
+
 ## Plan
 
 In this project I intend to use the techniques I'm learning in the course to improve a code repository for tightbinding calculations that I have developed and have been using in my research. I feel the code has some room for improvement in terms of speed optimization and I would like to implement some MPI features to it, so I can make use of the Rackham cluseter I have access to. I also need to properly document the project.
