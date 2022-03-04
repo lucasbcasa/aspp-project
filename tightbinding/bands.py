@@ -1,3 +1,9 @@
+"""
+Methods to calculate the band structure for a periodic nanowire.
+
+unit_cell creates the unit cell of a system;
+get_bands calls unit_cell and calculates it corresponding band structure.
+"""
 import nanowires
 import solvers
 import constants

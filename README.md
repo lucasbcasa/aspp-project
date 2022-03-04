@@ -26,10 +26,10 @@ c. GPU acceleration:
 
 - [ ] Documented the code:
     - [x] bands.py
-    - [ ] constants.py
+    - [x] constants.py
     - [ ] eigenvalueDerivatives.py
     - [ ] graphics.py
-    - [ ] hamiltonians.py
+    - [x] hamiltonians.py
     - [ ] junctions.py
     - [ ] multiterminal.py
     - [ ] nanowires.py

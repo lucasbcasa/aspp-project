@@ -1,7 +1,33 @@
+"""
+Construct the Hamiltonians for a given system.
+
+Hamiltonian builds the normal state Hamiltonian.
+HBdG builds the BdG Hamiltonian.
+"""
 import numpy as np
 import constants
 
 def Hamiltonian(nanowire, k=None):
+    """
+    Builds the normal state Hamiltonian for a given Nanowire object.
+    
+    The Nanowire object can be a Nanowire subclass such as a SNS_Junction object.
+    
+    Parameters
+    ----------
+    nanowire : nanowires.Nanowire object
+        The Nanowire object representing the system. All physical parameters are taken from the Nanowire object's attributes.
+    
+    Other Parameters
+    ----------------
+    k : float, optional
+        The wavenumber of a periodic system. If `k` is given it assumes the system is periodic and treats `nanowire` as the unit cell of the system.
+    
+    Returns
+    -------
+    H : np.ndarray
+        The dense-matrix representation of the normal state Hamiltonian. The ndarray's shape is (2`N`,2`N`), where `N` is the length of the nanowire provided, `nanowire.n_wire`. The factor of two comes from the spin DOF.
+    """
     n_wire  = nanowire.n_wire
         
     H_t = np.kron( np.diag( np.full((n_wire), 2 * nanowire.t) - nanowire.mu_profile ) , np.eye(2) ) 
@@ -9,8 +35,7 @@ def Hamiltonian(nanowire, k=None):
     H_B = np.kron( np.eye( n_wire ), nanowire.B * constants.sigma_x )
 
     v = 1j * nanowire.tso * np.tensordot( nanowire.so_axis, constants.sigmas, axes=(0,0) ) - nanowire.t * np.eye(2)
-    #v =  nanowire.tso * np.tensordot( nanowire.so_axis, constants.sigmas, axes=(0,0) ) - nanowire.t * np.eye(2)
-    #v = -1j * ( (1j * nanowire.tso * constants.sigma_x) - (1j * nanowire.t * np.eye(2))) 
+
 
     
     ########
@@ -31,13 +56,26 @@ def Hamiltonian(nanowire, k=None):
     H_v += H_v.transpose().conjugate()
     
     if k is not None:
-        #v_boundary = 1j * nanowire.tso * np.tensordot( nanowire.so_axis, constants.sigmas, axes=(0,0) ) - (nanowire.t * np.eye(2) *np.exp(1j*k))
-        #H_v += np.kron(np.eye(n_wire,k=1-n_wire), v_boundary) + np.kron(np.eye(n_wire,k=n_wire-1), (v_boundary).transpose().conjugate())
         H_v += np.kron(np.eye(n_wire,k=1-n_wire), v*np.exp(1j*k)) + np.kron(np.eye(n_wire,k=n_wire-1), (v*np.exp(1j*k)).transpose().conjugate())
 
     return H_t + H_B + H_v
 
-def HBdG(nanowire): 
+def HBdG(nanowire):
+    """
+    Builds the Bogoliubov-de Gennes Hamiltonian for a given Nanowire object.
+    
+    The Nanowire object can be a Nanowire subclass such as a SNS_Junction object.
+    
+    Parameters
+    ----------
+    nanowire : nanowires.Nanowire object
+        The Nanowire object representing the system. All physical parameters are taken from the Nanowire object's attributes.
+    
+    Returns
+    -------
+    HBdG : np.ndarray
+        The dense-matrix representation of the Bogoliubov-de Gennes Hamiltonian. The ndarray's shape is (4`N`,4`N`), where `N` is the length of the nanowire provided, `nanowire.n_wire`. A factor of two comes from the spin DOF and the other from the particle-hole DOF.
+    """
     delta_profile = nanowire.delta_profile
 
     H_0 = Hamiltonian(nanowire, k=nanowire.k)
@@ -55,33 +93,3 @@ def HBdG(nanowire):
     H += np.kron( np.asarray([[0,0],[1,0]]), H_d.conjugate().transpose() )
     
     return H
-
-
-# # Remaining to be implemented
-
-# def Hamiltonian_sparse(nanowire, B): # Nanowire is taken to be in the shape of build_nanowire
-#     (N,t,mu,sc,tso,sigma_axis,periodic_bc) = nanowire
-#     H_t = sparse.kron(sparse.diags(2*t-mu), sparse.eye(2))
-#     H_B = sparse.kron(sparse.eye(N), sparse.csr_matrix(B*pauli_matrices[0]))
-#     v = (1j*tso*np.inner(sigma_axis, np.transpose(pauli_matrices, (1,2,0)))) + np.asarray([[-t, 0], [0, -t]])
-#     H_v = sparse.kron(sparse.eye(N,k=1), sparse.csr_matrix(v))
-#     H_v += H_v.transpose().conjugate()
-#     
-#     if(periodic_bc): 
-#         phase_diff = 0*(nanowire[3][0]-nanowire[3][-1])
-#         H_v += sparse.kron(sparse.eye(N,k=1-N), v*np.exp(1j*phase_diff/2)) + sparse.kron(sparse.eye(N,k=N-1), (v*np.exp(-1j*phase_diff/2)).transpose().conjugate())
-#     
-#     return H_t + H_B + H_v
-# 
-# def HBdG_sparse(nanowire, B):
-#     (N,t,mu,sc,tso,sigma_axis,periodic_bc) = nanowire
-#     H_0 = Hamiltonian_sparse(nanowire, B)
-#     H_d = sparse.kron(sparse.diags(sc), sparse.csr_matrix(1j*pauli_matrices[1]))
-#     
-#     H = sparse.kron(sparse.csr_matrix([[1,0],[0,0]]), H_0)
-#     H += sparse.kron(sparse.csr_matrix([[0,0],[0,1]]), -H_0.transpose())
-#     H += sparse.kron(sparse.csr_matrix([[0,1],[0,0]]), H_d)
-#     H += sparse.kron(sparse.csr_matrix([[0,0],[1,0]]), H_d.conjugate().transpose())
-#     
-#     return H
-# 
