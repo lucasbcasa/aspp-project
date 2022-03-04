@@ -15,10 +15,13 @@ A better outline of the project still needs to be developed, but the main points
 
 Bonus:
   In case there is enough time I would also like to complete the following tasks.
+
 a. Speed optimization:
   I think the way I currently build matrices could be optimized. Ideally I want to spend most of the time of the code diagonalizing the matrices, and the least amount of time doing other things (like constructing the matrices). This is because the part of the code that diagonalizes these matrices comes from standard libraries that are probably almost completely optimized.
+
 b. Improve workflow and versatility:
   The python library is currently accompanied by jupyter notebook files which I use to input configurations, and manipulate and plot data. With time these interfaces became very bloated and convoluted. If possible I would like to overhaul them to a simpler system and add some command-line interface that will allow me to run the code remotely in clusters, for example.
+
 c. GPU acceleration:
   Although I currently don't have access to a GPU-based computing centre, it would be interesting to learn the packages related to GPU acceleration in python as well as its strengths and weaknesses.
 
@@ -27,10 +30,8 @@ c. GPU acceleration:
 - [ ] Documented the code:
     - [x] bands.py
     - [x] constants.py
-    - [ ] eigenvalueDerivatives.py
     - [ ] graphics.py
     - [x] hamiltonians.py
-    - [ ] junctions.py
     - [ ] multiterminal.py
     - [ ] nanowires.py
     - [ ] sharpness.py

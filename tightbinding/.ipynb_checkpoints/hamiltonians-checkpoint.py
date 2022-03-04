@@ -35,10 +35,6 @@ def Hamiltonian(nanowire, k=None):
     H_B = np.kron( np.eye( n_wire ), nanowire.B * constants.sigma_x )
 
     v = 1j * nanowire.tso * np.tensordot( nanowire.so_axis, constants.sigmas, axes=(0,0) ) - nanowire.t * np.eye(2)
-
-
-    
-    ########
     
     try:
         tau = nanowire.tau
@@ -51,8 +47,6 @@ def Hamiltonian(nanowire, k=None):
 
     H_v = np.kron(v_grid, v )
     
-    
-    ###########
     H_v += H_v.transpose().conjugate()
     
     if k is not None:
