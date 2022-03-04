@@ -4,9 +4,12 @@ This module should have some methods which make use of the mpi4py package to par
 
 from mpi4py import MPI
 import numpy as np
+import nanowires
+import solvers
+import graphics
 
 def getConfig(indices, param_dict):
-    config = { param : param[indices[i]] for i , (param, param_val) in enumerate(param_dict.items())}
+    config = { param : param_val[indices[i]] for i , (param, param_val) in enumerate(param_dict.items())}
     return config
 
 def getDimensions(param_dict):
@@ -30,7 +33,7 @@ def split_work(dims, n_workers):
     workloads = [[]] * n_workers
     
     for indices, _ in np.ndenumerate(dummy_array):
-        indices = np.array(indices)
+        #indices = np.array(indices)
 
         linear_index  = np.ravel_multi_index(indices,dims)
         worker_index = linear_index // n_jobs
@@ -39,21 +42,7 @@ def split_work(dims, n_workers):
         workloads[worker_index] += [indices]
         
     return workloads
-    
-# Get a job that needs to be done; create multiple processes; split the job; ask each process to do the job until it's all done
-def getJobs(param_dict, comm):
-    # Get the dimensions of the parameters
-    dims = getDimensions(param_dict)
-    
-    print("dims: ", dims)
-    
-    # get number of workers, ignore root
-    n_workers = comm.Get_size() - 1 
-    
-    # create list of indices of jobs that each worker should do
-    workloads = split_work(dims, n_workers)
-    
-    return workloads
+
 
 # Dumb way: give each worker a list of jobs (configs) and wait all of them to finish. Each worker does this:
 def work_cycle(config_indices, param_dict):    
@@ -65,37 +54,66 @@ def work_cycle(config_indices, param_dict):
     for indices in config_indices:
         
         # Get the configs from the parameter set
-        config = getConfig(indices)
+        config = getConfig(indices, param_dict)
         
         # Initialize a nanowire to that config
-        nanowire = nanowires.Nanowire(config)
+        nanowire = nanowires.Nanowire(**config)
         
         # Solve
-        eigs += [solver.solve_single(nanowire)]
+        eigs += [solvers.solve_single(nanowire)]
     
-    return eigs
+    return np.array(eigs)
+
+def save_results(data, jobs, eigs_list):
+    for indices, eig in zip(jobs,eigs_list):
+        data[indices] = eig
+    return data
 
 if __name__ == '__main__':
     
-    test_params = {'n_wire':[100,200], 'mu':[-0.5, 0.0, 0.5]}
+    import matplotlib.pyplot as plt
+    test_params = {'n_wire':[100,200], 'mu':[-0.5, 0.0, 0.5], 'delta':[0.25], 'b':np.linspace(0,2)}
     
     param_dict  = test_params
     
     comm = MPI.COMM_WORLD
-    if comm.Get_rank() == 0:
-        #job = 'Yay!'
-        #comm.send(job,dest=1)
+    rank = comm.Get_rank()
+    
+    if rank == 0:
         print("Going to enter job")
-        workloads = getJobs(param_dict, comm)
         
+        # Get the dimensions of the parameters
+        dims = getDimensions(param_dict)
+
+        # get number of workers, ignore root
+        n_workers = comm.Get_size() - 1 
+
+        # create list of indices of jobs that each worker should do
+        workloads = split_work(dims, n_workers)
+        
+        # Send each worker its workload
         for worker_index, job in enumerate(workloads):
-            # Give them the appropriate jobs
-            print("Sending")
-            comm.send(job, dest=worker_index)
+            print("Sending ", worker_index+1)
+            comm.send(job, dest=worker_index+1)
+        
+        results = []
+        spectra = np.zeros(dims, dtype='object')
+        # Collect the results
+        for worker_index, _ in enumerate(workloads):
+            print("Receiving ", worker_index+1)
+            results += [comm.recv(source=worker_index+1)]
+            
+        # Process the results and rearange them into the data ndarray
+        print("Saving Results")
+        for worker_index, (jobs, eigs_list) in enumerate(zip(workloads, results)):
+            print("Processing ", worker_index)
+            spectra = save_results(spectra, jobs, eigs_list)
+        
+        data = {'spectra':spectra, 'params':param_dict}
+        graphics.plot_data(data, 'spectra')
+        plt.show()
         
     else:
-        print("Receiving")
-        #job = comm.recv(source=0)
-        #print(job)
-        #eigs = work_cycle(job,param_dict)
-        pass
+        job = comm.recv(source=0)
+        eigs_list = work_cycle(job,param_dict)
+        comm.send(eigs_list, dest=0)

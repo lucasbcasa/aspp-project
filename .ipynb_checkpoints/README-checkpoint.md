@@ -41,6 +41,10 @@ c. GPU acceleration:
     - [ ] utilities.py
     - [ ] wavefunctions.py
 - [ ] MPI:
-    - [ ] Create MPI_solver.py
-    - [ ] ?
+    - [x] Create MPI_solver.py
+    - [x] Implement code to separate parameter tuples and ask each process to solve them in parallel to other processes
+    - [x] First round of debugging and testing
+    - [ ] More rounds of debugging and testing
+    - [ ] Organizing the code
+    - [ ] Documenting
 - [x] Transform code into a package by creating __init__.py file with necessary imports and my custom reload function

@@ -66,7 +66,8 @@ params_units = {'n_sc':' $[sites]$',
                }
 
 #: Dictionary of parameters and their plot labels
-params_labels = {'n_sc':'$N_s~[sites]$', 
+params_labels = {'n_wire':'$N~[sites]$', 
+                 'n_sc':'$N_s~[sites]$', 
                  'n_normal':'$N_n~[sites]$', 
                  'a':'$a~[nm]$',
                  'delta':'$\Delta~[meV]$',
