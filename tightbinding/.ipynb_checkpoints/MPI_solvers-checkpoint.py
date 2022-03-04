@@ -72,7 +72,7 @@ def save_results(data, jobs, eigs_list):
 if __name__ == '__main__':
     
     import matplotlib.pyplot as plt
-    test_params = {'n_wire':[100,200], 'mu':[-0.5, 0.0, 0.5], 'delta':[0.25], 'b':np.linspace(0,2)}
+    test_params = {'n_wire':[100], 'mu':[0.0, 0.5], 'delta':[0.25], 'b':np.linspace(0,2)}
     
     param_dict  = test_params
     

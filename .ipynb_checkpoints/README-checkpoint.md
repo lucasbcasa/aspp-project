@@ -44,6 +44,7 @@ c. GPU acceleration:
     - [x] Create MPI_solver.py
     - [x] Implement code to separate parameter tuples and ask each process to solve them in parallel to other processes
     - [x] First round of debugging and testing
+    - [x] Added a tester file "test_mpi.sh"
     - [ ] More rounds of debugging and testing
     - [ ] Organizing the code
     - [ ] Documenting
