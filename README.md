@@ -1,4 +1,4 @@
-# aspp-project 2022 - Lucas Baldo 
+# aspp-project 2022 - Lucas Baldo Mesa Casa
 Project for the ASPP course
 
 ## Note
